@@ -37,3 +37,31 @@ func GetCard(uuid string) (card.Card, error) {
 
 	return result, nil
 }
+
+func IndexCards(limit int64) ([]card.Card, error) {
+	var result []card.Card
+
+	var uri = context.GetUri() + "/card" // handle limit here
+
+	if limit == 0 {
+		uri = uri + "?limit=" + "100"
+	}
+
+	resp, err := http.Get(uri)
+
+	if resp.StatusCode == 400 {
+		return result, errors.ErrNoCards
+	}
+
+	if err != nil {
+		return result, errors.ErrNoCard
+	}
+
+	body, _ := io.ReadAll(resp.Body)
+
+	if _err := json.Unmarshal(body, &result); _err != nil {
+		return result, _err
+	}
+
+	return result, nil
+}
