@@ -13,7 +13,7 @@ import (
 func GetCard(uuid string) (card.Card, error) {
 	var result card.Card
 
-	var uri = context.GetUri() + "/card" + "?cardId=" + uuid
+	var uri = context.GetUri("/card") + "?cardId=" + uuid
 
 	resp, err := http.Get(uri)
 
@@ -41,7 +41,7 @@ func GetCard(uuid string) (card.Card, error) {
 func IndexCards(limit int64) ([]card.Card, error) {
 	var result []card.Card
 
-	var uri = context.GetUri() + "/card" // handle limit here
+	var uri = context.GetUri("/card") // handle limit here
 
 	if limit == 0 {
 		uri = uri + "?limit=" + "100"

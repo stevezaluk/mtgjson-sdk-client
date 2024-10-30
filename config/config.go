@@ -21,7 +21,7 @@ func (c Config) BuildUri() string {
 		prefix = "https://"
 	}
 
-	ret := []string{prefix, c.IPAddress, ":", c.Port}
+	ret := []string{prefix, c.IPAddress, ":", c.Port + "/api/v1"}
 	return strings.Join(ret, "")
 }
 

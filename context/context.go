@@ -8,6 +8,14 @@ import (
 
 var ClientContext = context.Background()
 
+const (
+	CARD_ENDPOINT    = "/card"
+	DECK_ENDPOINT    = "/deck"
+	SET_ENDPOINT     = "/set"
+	HEALTH_ENDPOINT  = "/health"
+	METRICS_ENDPOINT = "/metrics"
+)
+
 func InitConfig(config config.Config) {
 	ctx := context.WithValue(ClientContext, "config", config)
 	ClientContext = ctx
@@ -18,12 +26,14 @@ func InitUri(config config.Config) {
 	ClientContext = ctx
 }
 
-func GetUri() string {
+func GetUri(endpoint string) string {
 	uri := ClientContext.Value("uri")
 	if uri == nil {
 		config := ClientContext.Value("config").(config.Config)
 		InitUri(config)
 	}
 
-	return uri.(string)
+	ret := uri.(string) + endpoint
+
+	return ret
 }
