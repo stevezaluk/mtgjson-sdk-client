@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/stevezaluk/mtgjson-models/deck"
 	"github.com/stevezaluk/mtgjson-models/errors"
@@ -205,8 +206,12 @@ func DeleteCards(code string, cards []string, board string) error {
 	return nil
 }
 
-func IndexDecks() ([]deck.Deck, error) {
-	var uri = context.GetUri("/deck")
+func IndexDecks(limit int) ([]deck.Deck, error) {
+	if limit == 0 {
+		limit = 100
+	}
+
+	var uri = context.GetUri("/deck") + "?limit=" + strconv.Itoa(limit)
 
 	resp, err := http.Get(uri)
 	if err != nil {
