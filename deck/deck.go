@@ -164,3 +164,44 @@ func AddCards(code string, cards []string, board string) ([]string, []string, er
 
 	return nil, nil, nil
 }
+
+func DeleteCards(code string, cards []string, board string) error {
+	var updates deck.DeckUpdate
+
+	var uri = context.GetUri("/deck/content") + "?deckCode=" + code
+
+	if board == deck.MAINBOARD {
+		updates.MainBoard = append(updates.MainBoard, cards...)
+	} else if board == deck.SIDEBOARD {
+		updates.SideBoard = append(updates.SideBoard, cards...)
+	} else if board == deck.COMMANDER {
+		updates.Commander = append(updates.Commander, cards...)
+	}
+
+	deleteBytes, err := json.Marshal(&updates)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("DELETE", uri, bytes.NewBuffer(deleteBytes))
+	if err != nil {
+		return nil
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil
+	}
+
+	if resp.StatusCode == 404 {
+		return errors.ErrNoDeck
+	}
+
+	if resp.StatusCode == 500 {
+		return errors.ErrDeckDeleteFailed
+	}
+
+	return nil
+
+}
