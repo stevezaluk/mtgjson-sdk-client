@@ -86,3 +86,28 @@ func CreateDeck(name string, code string, deckType string) (bool, error) {
 
 	return true, nil
 }
+
+func DeleteDeck(code string) (bool, error) {
+	var uri = context.GetUri("/deck") + "?deckCode=" + code
+
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return false, nil
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, nil
+	}
+
+	if resp.StatusCode == 404 {
+		return false, errors.ErrNoDeck
+	}
+
+	if resp.StatusCode == 500 {
+		return false, errors.ErrDeckDeleteFailed
+	}
+
+	return true, nil
+}
