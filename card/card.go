@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/stevezaluk/mtgjson-models/card"
 	"github.com/stevezaluk/mtgjson-models/errors"
@@ -38,14 +39,14 @@ func GetCard(uuid string) (card.Card, error) {
 	return result, nil
 }
 
-func IndexCards(limit int64) ([]card.Card, error) {
+func IndexCards(limit int) ([]card.Card, error) {
 	var result []card.Card
 
-	var uri = context.GetUri("/card") // handle limit here
-
 	if limit == 0 {
-		uri = uri + "?limit=" + "100"
+		limit = 100
 	}
+
+	var uri = context.GetUri("/card") + "?limit=" + strconv.Itoa(limit)
 
 	resp, err := http.Get(uri)
 
