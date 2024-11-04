@@ -185,13 +185,13 @@ func DeleteCards(code string, cards []string, board string) error {
 
 	req, err := http.NewRequest("DELETE", uri, bytes.NewBuffer(deleteBytes))
 	if err != nil {
-		return nil
+		return err
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	if resp.StatusCode == 404 {
@@ -203,5 +203,26 @@ func DeleteCards(code string, cards []string, board string) error {
 	}
 
 	return nil
+}
 
+func IndexDecks() ([]deck.Deck, error) {
+	var uri = context.GetUri("/deck")
+
+	resp, err := http.Get(uri)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode == 400 { // change this to 404
+		return nil, errors.ErrNoDecks
+	}
+
+	var results []deck.Deck
+
+	body, _ := io.ReadAll(resp.Body)
+	if err := json.Unmarshal(body, &results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
