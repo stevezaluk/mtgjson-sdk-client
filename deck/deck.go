@@ -28,7 +28,7 @@ func GetDeck(code string) (deck.Deck, error) {
 
 	body, _ := io.ReadAll(resp.Body)
 
-	if _err := json.Unmarshal(body, &result); err != nil {
+	if _err := json.Unmarshal(body, &result); _err != nil {
 		return result, _err
 	}
 
