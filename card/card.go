@@ -68,6 +68,31 @@ func NewCard(card card.Card) error {
 	return nil
 }
 
+func DeleteCard(uuid string) error {
+	var uri = context.GetUri("/card") + "?cardId=" + uuid
+
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode == 404 {
+		return errors.ErrNoCard
+	}
+
+	if resp.StatusCode == 500 {
+		return errors.ErrCardDeleteFailed
+	}
+
+	return nil
+}
+
 func IndexCards(limit int) ([]card.Card, error) {
 	var result []card.Card
 
