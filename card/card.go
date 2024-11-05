@@ -1,6 +1,7 @@
 package card
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -37,6 +38,34 @@ func GetCard(uuid string) (card.Card, error) {
 	}
 
 	return result, nil
+}
+
+func NewCard(card card.Card) error {
+	var uri = context.GetUri("/card")
+
+	cardBytes, err := json.Marshal(&card)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.Post(uri, "application/json", bytes.NewBuffer(cardBytes))
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode == 409 {
+		return errors.ErrCardAlreadyExist
+	}
+
+	if resp.StatusCode == 400 {
+		return errors.ErrCardMissingId
+	}
+
+	if resp.StatusCode == 500 {
+		return errors.ErrCardUpdateFailed
+	}
+
+	return nil
 }
 
 func IndexCards(limit int) ([]card.Card, error) {
