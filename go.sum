@@ -2,5 +2,7 @@ github.com/go-resty/resty/v2 v2.16.2 h1:CpRqTjIzq/rweXUt9+GxzzQdlkqMdt8Lm/fuK/CA
 github.com/go-resty/resty/v2 v2.16.2/go.mod h1:0fHAoK7JoBy/Ch36N8VFeMsK7xQOHhvWaC3iOktwmIU=
 github.com/stevezaluk/mtgjson-models v1.0.9 h1:3UXdYl1SvNi/jfCl0XxT0KhWRkdrU4xcCu/GYj98QIw=
 github.com/stevezaluk/mtgjson-models v1.0.9/go.mod h1:a/eGQqz5d3YnzI9RutaTuj7/3ylq6RojMAWg/fYb7xc=
+github.com/stevezaluk/mtgjson-models v1.2.9 h1:FM8bHQsD14QQ81UlI+YTvPCjLwAeu/vip2JlafVTk6A=
+github.com/stevezaluk/mtgjson-models v1.2.9/go.mod h1:7Vu7I83df9TLplzc1druToaY4ngMw1BHsr+ndFNqkpo=
 golang.org/x/net v0.27.0 h1:5K3Njcw06/l2y9vpGCSdcxWOYHOUk3dVNGDXN+FvAys=
 golang.org/x/net v0.27.0/go.mod h1:dDi0PyhWNoiUOrAS8uXv/vnScO4wnHQO4mj9fn/RytE=
