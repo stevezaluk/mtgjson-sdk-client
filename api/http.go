@@ -1,6 +1,8 @@
 package api
 
-import "github.com/go-resty/resty/v2"
+import (
+	"github.com/go-resty/resty/v2"
+)
 
 /*
 HTTPClient Simple abstraction of an HTTP Client that can be passed in between the namespaces
@@ -18,4 +20,17 @@ func NewHttpClient() *HTTPClient {
 	return &HTTPClient{
 		Client: resty.New(),
 	}
+}
+
+/*
+BuildRequest Builds a new resty request automatically, filling in the headers and the authentication token
+*/
+func (client *HTTPClient) BuildRequest() *resty.Request {
+	request := client.Client.R()
+	request.SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0")
+	request.SetHeader("Accept", "application/json")
+
+	// add auth token here
+
+	return request
 }
