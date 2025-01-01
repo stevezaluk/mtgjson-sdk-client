@@ -12,8 +12,8 @@ import (
 	"github.com/stevezaluk/mtgjson-sdk-client/context"
 )
 
-func GetCard(uuid string) (card.Card, error) {
-	var result card.Card
+func GetCard(uuid string) (card.CardSet, error) {
+	var result card.CardSet
 
 	var uri = context.GetUri("/card") + "?cardId=" + uuid
 
@@ -40,7 +40,7 @@ func GetCard(uuid string) (card.Card, error) {
 	return result, nil
 }
 
-func NewCard(card card.Card) error {
+func NewCard(card card.CardSet) error {
 	var uri = context.GetUri("/card")
 
 	cardBytes, err := json.Marshal(&card)
@@ -93,8 +93,8 @@ func DeleteCard(uuid string) error {
 	return nil
 }
 
-func IndexCards(limit int) ([]card.Card, error) {
-	var result []card.Card
+func IndexCards(limit int) ([]card.CardSet, error) {
+	var result []card.CardSet
 
 	if limit == 0 {
 		limit = 100
