@@ -1,8 +1,10 @@
 package api
 
 import (
+	"github.com/spf13/viper"
 	"github.com/stevezaluk/mtgjson-sdk-client/card"
 	"github.com/stevezaluk/mtgjson-sdk-client/client"
+	"github.com/stevezaluk/mtgjson-sdk-client/config"
 	"github.com/stevezaluk/mtgjson-sdk-client/deck"
 )
 
@@ -18,12 +20,17 @@ type MtgjsonApi struct {
 /*
 New Initialize a new MTGJSON API object
 */
-func New(baseUrl string) *MtgjsonApi {
+func New() *MtgjsonApi {
 	httpClient := client.NewHttpClient()
+
+	baseUrl := viper.GetString("api.base_url")
+	if baseUrl == "" {
+		config.BuildBaseUrl()
+	}
 
 	return &MtgjsonApi{
 		Client: httpClient,
-		Deck:   deck.New(baseUrl, httpClient),
-		Card:   card.New(baseUrl, httpClient),
+		Deck:   deck.New(baseUrl+"/deck", httpClient),
+		Card:   card.New(baseUrl+"/card", httpClient),
 	}
 }
