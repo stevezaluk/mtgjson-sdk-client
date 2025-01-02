@@ -36,6 +36,7 @@ func ReadConfigFile(path string) error {
 	viper.SetDefault("api.use_ssl", false)
 	viper.SetDefault("api.ip_address", "127.0.0.1")
 	viper.SetDefault("api.port", 8080)
+	viper.SetDefault("api.base_url", BuildBaseUrl(viper.GetString("api.ip_address"), viper.GetString("api.port"), viper.GetBool("api.use_ssl")))
 
 	return nil
 }
@@ -43,17 +44,13 @@ func ReadConfigFile(path string) error {
 /*
 BuildBaseUrl Build a base url string from an IP Address and a Port
 */
-func BuildBaseUrl() string {
-	ret := "http"
-	if viper.GetBool("api.use_ssl") {
-		ret = "https"
+func BuildBaseUrl(ipAddress string, port string, useSsl bool) string {
+	ret := "http://"
+	if useSsl {
+		ret = "https://"
 	}
 
-	ret += viper.GetString("api.ip_address") + viper.GetString("api.port") + "/api/v1"
-
-	if viper.GetString("api.base_url") == "" {
-		viper.Set("api.base_url", ret)
-	}
+	ret += ipAddress + ":" + port + "/api/v1"
 
 	return ret
 }
