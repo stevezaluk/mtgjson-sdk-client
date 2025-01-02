@@ -27,6 +27,7 @@ BuildRequest Builds a new resty request automatically, filling in the headers an
 */
 func (client *HTTPClient) BuildRequest() *resty.Request {
 	request := client.Client.R()
+	request.EnableTrace()
 	request.SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0")
 	request.SetHeader("Accept", "application/json")
 
