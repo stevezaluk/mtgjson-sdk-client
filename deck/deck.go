@@ -3,7 +3,7 @@ package deck
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/stevezaluk/mtgjson-sdk-client/api"
+	"github.com/stevezaluk/mtgjson-sdk-client/client"
 	"io"
 	"net/http"
 	"strconv"
@@ -17,13 +17,13 @@ DeckApi A representation of the deck namespace for the MTGJSON API
 */
 type DeckApi struct {
 	BaseUrl string
-	client  *api.HTTPClient
+	client  *client.HTTPClient
 }
 
 /*
 New Create a new instance of the DeckApi struct
 */
-func New(baseUrl string, client *api.HTTPClient) *DeckApi {
+func New(baseUrl string, client *client.HTTPClient) *DeckApi {
 	// add check to validate baseUrl here
 
 	return &DeckApi{

@@ -3,7 +3,7 @@ package card
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/stevezaluk/mtgjson-sdk-client/api"
+	"github.com/stevezaluk/mtgjson-sdk-client/client"
 	"io"
 	"net/http"
 	"strconv"
@@ -17,13 +17,13 @@ CardApi A representation of the card namespace for the MTGJSON API
 */
 type CardApi struct {
 	BaseUrl string
-	client  *api.HTTPClient
+	client  *client.HTTPClient
 }
 
 /*
 New Create a new instance of the CardApi struct
 */
-func New(baseUrl string, client *api.HTTPClient) *CardApi {
+func New(baseUrl string, client *client.HTTPClient) *CardApi {
 	// add error check for invalid url here
 
 	return &CardApi{
