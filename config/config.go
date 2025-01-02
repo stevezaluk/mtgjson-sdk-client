@@ -35,3 +35,21 @@ func ReadConfigFile(path string) error {
 
 	return nil
 }
+
+/*
+BuildBaseUrl Build a base url string from an IP Address and a Port
+*/
+func BuildBaseUrl() string {
+	ret := "http"
+	if viper.GetBool("api.use_ssl") {
+		ret = "https"
+	}
+
+	ret += viper.GetString("api.ip_address") + viper.GetString("api.port") + "/api/v1"
+
+	if viper.GetString("api.base_url") == "" {
+		viper.Set("api.base_url", ret)
+	}
+
+	return ret
+}
