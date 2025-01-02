@@ -25,11 +25,12 @@ func NewHttpClient() *HTTPClient {
 /*
 BuildRequest Builds a new resty request automatically, filling in the headers and the authentication token
 */
-func (client *HTTPClient) BuildRequest() *resty.Request {
-	request := client.Client.R()
-	request.EnableTrace()
-	request.SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0")
-	request.SetHeader("Accept", "application/json")
+func (client *HTTPClient) BuildRequest(result interface{}) *resty.Request {
+	request := client.Client.R().
+		EnableTrace().
+		SetHeader("Accept", "application/json").
+		SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0").
+		SetResult(result)
 
 	// add auth token here
 
