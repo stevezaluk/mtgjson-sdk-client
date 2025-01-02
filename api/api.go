@@ -6,6 +6,7 @@ import (
 	"github.com/stevezaluk/mtgjson-sdk-client/card"
 	"github.com/stevezaluk/mtgjson-sdk-client/client"
 	"github.com/stevezaluk/mtgjson-sdk-client/deck"
+	"github.com/stevezaluk/mtgjson-sdk-client/user"
 )
 
 /*
@@ -16,6 +17,7 @@ type MtgjsonApi struct {
 	Card   *card.CardApi
 	Deck   *deck.DeckApi
 	Auth   *auth.AuthApi
+	User   *user.UserApi
 }
 
 /*
@@ -30,5 +32,6 @@ func New() *MtgjsonApi {
 		Card:   card.New(baseUrl+"/card", httpClient),
 		Deck:   deck.New(baseUrl+"/deck", httpClient),
 		Auth:   auth.New(httpClient),
+		User:   user.New(baseUrl+"/user", httpClient),
 	}
 }
