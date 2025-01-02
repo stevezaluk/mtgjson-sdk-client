@@ -24,6 +24,9 @@ func New(client *client.HTTPClient) *AuthApi {
 	}
 }
 
+/*
+Login Exchange user credentials for an oauth.TokenSet
+*/
 func (api *AuthApi) Login(email string, password string) (*oauth.TokenSet, error) {
 	request := api.client.BuildRequest(&oauth.TokenSet{}).
 		SetBody(map[string]string{"email": email, "password": password}) // create protobuf model for this
