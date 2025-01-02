@@ -2,6 +2,7 @@ package client
 
 import (
 	"github.com/go-resty/resty/v2"
+	"github.com/spf13/viper"
 )
 
 /*
@@ -30,9 +31,8 @@ func (client *HTTPClient) BuildRequest(result interface{}) *resty.Request {
 		EnableTrace().
 		SetHeader("Accept", "application/json").
 		SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0").
-		SetResult(result)
-
-	// add auth token here
+		SetResult(result).
+		SetAuthToken(viper.GetString("api.token")) // request will fail if token is not valid
 
 	return request
 }
