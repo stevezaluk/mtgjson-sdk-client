@@ -19,7 +19,7 @@ func New(baseUrl string, client *client.HTTPClient) *DeckApi {
 	// add check to validate baseUrl here
 
 	return &DeckApi{
-		BaseUrl: baseUrl + "/deck",
+		BaseUrl: baseUrl,
 		client:  client,
 	}
 }
