@@ -33,6 +33,10 @@ func ReadConfigFile(path string) error {
 		return err
 	}
 
+	viper.SetDefault("api.use_ssl", false)
+	viper.SetDefault("api.ip_address", "127.0.0.1")
+	viper.SetDefault("api.port", 8080)
+
 	return nil
 }
 
