@@ -3,19 +3,39 @@ package card
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/stevezaluk/mtgjson-sdk-client/api"
 	"io"
 	"net/http"
 	"strconv"
 
 	"github.com/stevezaluk/mtgjson-models/card"
 	"github.com/stevezaluk/mtgjson-models/errors"
-	"github.com/stevezaluk/mtgjson-sdk-client/context"
 )
 
-func GetCard(uuid string) (card.CardSet, error) {
-	var result card.CardSet
+/*
+CardApi A representation of the card namespace for the MTGJSON API
+*/
+type CardApi struct {
+	BaseUrl string
+	client  *api.HTTPClient
+}
 
-	var uri = context.GetUri("/card") + "?cardId=" + uuid
+/*
+New Create a new instance of the CardApi struct
+*/
+func New(baseUrl string, client *api.HTTPClient) *CardApi {
+	// add error check for invalid url here
+
+	return &CardApi{
+		BaseUrl: baseUrl + "/card",
+		client:  client,
+	}
+}
+
+func (cardApi *CardApi) GetCard(uuid string) (card.CardSet, error) {
+	var result card.CardSet // change return type to pointers here
+
+	var uri = cardApi.BaseUrl + "?cardId=" + uuid
 
 	resp, err := http.Get(uri)
 
@@ -40,15 +60,13 @@ func GetCard(uuid string) (card.CardSet, error) {
 	return result, nil
 }
 
-func NewCard(card card.CardSet) error {
-	var uri = context.GetUri("/card")
-
+func (cardApi *CardApi) NewCard(card card.CardSet) error {
 	cardBytes, err := json.Marshal(&card)
 	if err != nil {
 		return err
 	}
 
-	resp, err := http.Post(uri, "application/json", bytes.NewBuffer(cardBytes))
+	resp, err := http.Post(cardApi.BaseUrl, "application/json", bytes.NewBuffer(cardBytes))
 	if err != nil {
 		return err
 	}
@@ -68,10 +86,8 @@ func NewCard(card card.CardSet) error {
 	return nil
 }
 
-func DeleteCard(uuid string) error {
-	var uri = context.GetUri("/card") + "?cardId=" + uuid
-
-	req, err := http.NewRequest("DELETE", uri, nil)
+func (cardApi *CardApi) DeleteCard(uuid string) error {
+	req, err := http.NewRequest("DELETE", cardApi.BaseUrl, nil)
 	if err != nil {
 		return err
 	}
@@ -93,14 +109,14 @@ func DeleteCard(uuid string) error {
 	return nil
 }
 
-func IndexCards(limit int) ([]card.CardSet, error) {
+func (cardApi *CardApi) IndexCards(limit int) ([]card.CardSet, error) {
 	var result []card.CardSet
 
 	if limit == 0 {
 		limit = 100
 	}
 
-	var uri = context.GetUri("/card") + "?limit=" + strconv.Itoa(limit)
+	var uri = cardApi.BaseUrl + "?limit=" + strconv.Itoa(limit)
 
 	resp, err := http.Get(uri)
 

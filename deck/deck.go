@@ -3,19 +3,39 @@ package deck
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/stevezaluk/mtgjson-sdk-client/api"
 	"io"
 	"net/http"
 	"strconv"
 
 	"github.com/stevezaluk/mtgjson-models/deck"
 	"github.com/stevezaluk/mtgjson-models/errors"
-	"github.com/stevezaluk/mtgjson-sdk-client/context"
 )
 
-func GetDeck(code string) (deck.Deck, error) {
-	var result deck.Deck
+/*
+DeckApi A representation of the deck namespace for the MTGJSON API
+*/
+type DeckApi struct {
+	BaseUrl string
+	client  *api.HTTPClient
+}
 
-	var uri = context.GetUri("/deck") + "?deckCode=" + code
+/*
+New Create a new instance of the DeckApi struct
+*/
+func New(baseUrl string, client *api.HTTPClient) *DeckApi {
+	// add check to validate baseUrl here
+
+	return &DeckApi{
+		BaseUrl: baseUrl + "/deck",
+		client:  client,
+	}
+}
+
+func (deckApi *DeckApi) GetDeck(code string) (deck.Deck, error) {
+	var result deck.Deck // change to pointer here
+
+	var uri = deckApi.BaseUrl + "?deckCode=" + code // update this to use builtin query string args
 
 	resp, err := http.Get(uri)
 
@@ -36,19 +56,17 @@ func GetDeck(code string) (deck.Deck, error) {
 	return result, nil
 }
 
-func NewDeck(deck deck.Deck) (bool, error) {
+func (deckApi *DeckApi) NewDeck(deck deck.Deck) (bool, error) {
 	if deck.Name == "" || deck.Code == "" {
 		return false, errors.ErrDeckMissingId
 	}
-
-	var uri = context.GetUri("/deck")
 
 	deckBytes, err := json.Marshal(&deck)
 	if err != nil {
 		return false, err
 	}
 
-	resp, err := http.Post(uri, "application/json", bytes.NewBuffer(deckBytes))
+	resp, err := http.Post(deckApi.BaseUrl, "application/json", bytes.NewBuffer(deckBytes))
 
 	if resp.StatusCode == 500 {
 		return false, errors.ErrDeckUpdateFailed
@@ -69,8 +87,8 @@ func NewDeck(deck deck.Deck) (bool, error) {
 	return true, nil
 }
 
-func CreateDeck(name string, code string, deckType string) (bool, error) {
-	var new deck.Deck
+func (deckApi *DeckApi) CreateDeck(name string, code string, deckType string) (bool, error) {
+	var new deck.Deck // change to pointer here
 
 	if name == "" || code == "" {
 		return false, errors.ErrDeckMissingId
@@ -80,7 +98,7 @@ func CreateDeck(name string, code string, deckType string) (bool, error) {
 	new.Code = code
 	new.Type = deckType
 
-	_, err := NewDeck(new)
+	_, err := deckApi.NewDeck(new)
 	if err != nil {
 		return false, err
 	}
@@ -88,8 +106,8 @@ func CreateDeck(name string, code string, deckType string) (bool, error) {
 	return true, nil
 }
 
-func DeleteDeck(code string) (bool, error) {
-	var uri = context.GetUri("/deck") + "?deckCode=" + code
+func (deckApi *DeckApi) DeleteDeck(code string) (bool, error) {
+	var uri = deckApi.BaseUrl + "?deckCode=" + code
 
 	req, err := http.NewRequest("DELETE", uri, nil)
 	if err != nil {
@@ -113,12 +131,12 @@ func DeleteDeck(code string) (bool, error) {
 	return true, nil
 }
 
-func IndexDecks(limit int) ([]deck.Deck, error) {
+func (deckApi *DeckApi) IndexDecks(limit int) ([]deck.Deck, error) {
 	if limit == 0 {
 		limit = 100
 	}
 
-	var uri = context.GetUri("/deck") + "?limit=" + strconv.Itoa(limit)
+	var uri = deckApi.BaseUrl + "?limit=" + strconv.Itoa(limit)
 
 	resp, err := http.Get(uri)
 	if err != nil {
