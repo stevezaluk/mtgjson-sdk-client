@@ -4,7 +4,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stevezaluk/mtgjson-sdk-client/card"
 	"github.com/stevezaluk/mtgjson-sdk-client/client"
-	"github.com/stevezaluk/mtgjson-sdk-client/config"
 	"github.com/stevezaluk/mtgjson-sdk-client/deck"
 )
 
@@ -24,10 +23,6 @@ func New() *MtgjsonApi {
 	httpClient := client.NewHttpClient()
 
 	baseUrl := viper.GetString("api.base_url")
-	if baseUrl == "" {
-		config.BuildBaseUrl()
-	}
-
 	return &MtgjsonApi{
 		Client: httpClient,
 		Deck:   deck.New(baseUrl+"/deck", httpClient),
