@@ -1,3 +1,5 @@
+github.com/auth0/go-auth0 v1.13.1 h1:ifAJ+Y0yb94D9VH6Zp9gHuumVsWlwT3CXPV+sDfK4pM=
+github.com/auth0/go-auth0 v1.13.1/go.mod h1:G3oPT7sWjmM4mHbn6qkMYEsxnwm/5PnSbo0kpPLSS0E=
 github.com/go-resty/resty/v2 v2.16.2 h1:CpRqTjIzq/rweXUt9+GxzzQdlkqMdt8Lm/fuK/CAbAg=
 github.com/go-resty/resty/v2 v2.16.2/go.mod h1:0fHAoK7JoBy/Ch36N8VFeMsK7xQOHhvWaC3iOktwmIU=
 github.com/google/go-cmp v0.5.5 h1:Khx7svrCpmxxtHBq5j2mp/xVjsi8hQMfNLvJFAlrGgU=
