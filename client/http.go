@@ -3,6 +3,7 @@ package client
 import (
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/viper"
+	apiModels "github.com/stevezaluk/mtgjson-models/api"
 )
 
 /*
@@ -32,6 +33,7 @@ func (client *HTTPClient) BuildRequest(result interface{}) *resty.Request {
 		SetHeader("Accept", "application/json").
 		SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0").
 		SetResult(result).
+		SetError(&apiModels.APIResponse{}).
 		SetAuthToken(viper.GetString("api.token")) // request will fail if token is not valid
 
 	return request

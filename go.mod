@@ -2,7 +2,7 @@ module github.com/stevezaluk/mtgjson-sdk-client
 
 go 1.23.2
 
-require github.com/stevezaluk/mtgjson-models v1.2.9 // direct
+require github.com/stevezaluk/mtgjson-models v1.3.2 // direct
 
 require (
 	github.com/auth0/go-auth0 v1.13.1
@@ -30,6 +30,7 @@ require (
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
