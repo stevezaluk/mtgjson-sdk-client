@@ -46,3 +46,18 @@ func (api *AuthApi) Login(email string, password string) (*oauth.TokenSet, error
 
 	return resp.Result().(*oauth.TokenSet), nil
 }
+
+/*
+SetAuthToken Make a login request for the user and set the auth token for this session
+*/
+func (api *AuthApi) SetAuthToken(email string, password string) error {
+	tokenSet, err := api.Login(email, password)
+	if err != nil {
+		return err
+	}
+
+	viper.Set("api.token_str", tokenSet.AccessToken)
+	viper.Set("api.token", tokenSet)
+
+	return nil
+}
