@@ -63,3 +63,32 @@ func (api *CardApi) GetCard(uuid string, owner string) (*cardModel.CardSet, erro
 
 	return resp.Result().(*cardModel.CardSet), nil
 }
+
+/*
+IndexCards Returns all cards in the database unmarshalled as card models. The limit parameter
+will be passed directly to the database query to limit the number of models returned
+*/
+func (api *CardApi) IndexCards() (*[]*cardModel.CardSet, error) {
+	request := api.client.BuildRequest(&[]*cardModel.CardSet{})
+
+	resp, err := request.Get(api.BaseUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return nil, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return nil, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusNotFound {
+			return nil, sdkErrors.ErrNoCards
+		}
+	}
+
+	return resp.Result().(*[]*cardModel.CardSet), nil
+}
