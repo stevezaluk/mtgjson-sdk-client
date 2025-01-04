@@ -92,3 +92,81 @@ func (api *CardApi) IndexCards() (*[]*cardModel.CardSet, error) {
 
 	return resp.Result().(*[]*cardModel.CardSet), nil
 }
+
+/*
+NewCard Insert a new card in the form of a model into the MongoDB database. The card model must have a
+valid name and MTGJSONv4 ID, additionally, the card cannot already exist under the same ID
+*/
+func (api *CardApi) NewCard(card *cardModel.CardSet, owner string) (*apiModels.APIResponse, error) {
+	request := api.client.BuildRequest(&apiModels.APIResponse{}).
+		SetBody(card).
+		SetQueryParam("owner", owner)
+
+	resp, err := request.Post(api.BaseUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		errorResponse := resp.Error().(*apiModels.APIResponse)
+
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return errorResponse, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return errorResponse, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusConflict {
+			return errorResponse, sdkErrors.ErrCardAlreadyExist
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			return errorResponse, sdkErrors.ErrCardMissingId
+		}
+	}
+
+	return resp.Result().(*apiModels.APIResponse), nil
+}
+
+/*
+DeleteCard Remove a card from the MongoDB database. The UUID passed in the parameter must be a valid MTGJSONv4 ID.
+ErrNoCard will be returned if no card exists under the passed UUID, and ErrCardDeleteFailed will be returned
+if the deleted count does not equal 1
+*/
+func (api *CardApi) DeleteCard(uuid string, owner string) (*apiModels.APIResponse, error) {
+	request := api.client.BuildRequest(&apiModels.APIResponse{}).
+		SetQueryParams(map[string]string{"cardId": uuid, "owner": owner})
+
+	resp, err := request.Delete(api.BaseUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		errorResponse := resp.Error().(*apiModels.APIResponse)
+
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return errorResponse, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return errorResponse, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusNotFound {
+			return errorResponse, sdkErrors.ErrNoCard
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			return errorResponse, sdkErrors.ErrCardMissingId
+		}
+
+		if resp.StatusCode() == http.StatusInternalServerError {
+			return errorResponse, sdkErrors.ErrCardDeleteFailed
+		}
+	}
+
+	return resp.Result().(*apiModels.APIResponse), nil
+}
