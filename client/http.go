@@ -34,7 +34,7 @@ func (client *HTTPClient) BuildRequest(result interface{}) *resty.Request {
 		SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0").
 		SetResult(result).
 		SetError(&apiModels.APIResponse{}).
-		SetAuthToken(viper.GetString("api.token")) // request will fail if token is not valid
+		SetAuthToken(viper.GetString("api.token_str")) // request will fail if token is not valid
 
 	return request
 }
