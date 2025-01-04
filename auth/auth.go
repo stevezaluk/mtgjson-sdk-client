@@ -31,19 +31,24 @@ Login Exchange user credentials for an oauth.TokenSet
 */
 func (api *AuthApi) Login(email string, password string) (*oauth.TokenSet, error) {
 	request := api.client.BuildRequest(&oauth.TokenSet{}).
-		SetBody(map[string]string{"email": email, "password": password}) // create protobuf model for this
+		SetBody(apiModels.LoginRequest{
+			Email:    email,
+			Password: password,
+		})
 
 	resp, err := request.Post(viper.GetString("api.base_url") + "/login")
 	if err != nil {
 		return nil, err
 	}
 
-	if resp.StatusCode() == http.StatusNotFound {
-		return nil, sdkErrors.ErrNoUser
-	}
+	if resp.Error() != nil { // were not returning the API response here to avoid having more than two responses
+		if resp.StatusCode() == http.StatusNotFound {
+			return nil, sdkErrors.ErrNoUser
+		}
 
-	if resp.StatusCode() == http.StatusInternalServerError {
-		return nil, sdkErrors.ErrTokenInvalid
+		if resp.StatusCode() == http.StatusInternalServerError {
+			return nil, sdkErrors.ErrTokenInvalid
+		}
 	}
 
 	return resp.Result().(*oauth.TokenSet), nil
