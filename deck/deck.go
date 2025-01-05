@@ -1,6 +1,7 @@
 package deck
 
 import (
+	apiModels "github.com/stevezaluk/mtgjson-models/api"
 	deckModel "github.com/stevezaluk/mtgjson-models/deck"
 	sdkErrors "github.com/stevezaluk/mtgjson-models/errors"
 	"github.com/stevezaluk/mtgjson-sdk-client/client"
@@ -93,4 +94,55 @@ func (api *DeckApi) GetDeckContents(code string, owner string) (*deckModel.DeckC
 	}
 
 	return resp.Result().(*deckModel.DeckContents), nil
+}
+
+/*
+AddCards Update the content ids in the deck model passed with new cards. This should
+probably validate cards in the future
+*/
+func (api *DeckApi) AddCards(code string, cards *deckModel.DeckContentIds, owner string) (*apiModels.APIResponse, error) {
+	request := api.client.BuildRequest(&apiModels.APIResponse{}).
+		SetQueryParams(map[string]string{"deckCode": code, "owner": owner}).
+		SetBody(cards)
+
+	resp, err := request.Post(api.BaseUrl + "/content")
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		errorResponse := resp.Error().(*apiModels.APIResponse)
+
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return errorResponse, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return errorResponse, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusNotFound {
+			return errorResponse, sdkErrors.ErrNoDeck
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			if errorResponse.Err == sdkErrors.ErrInvalidObjectStructure.Error() {
+				return errorResponse, sdkErrors.ErrInvalidObjectStructure
+			}
+
+			if errorResponse.Err == sdkErrors.ErrDeckMissingContentIds.Error() {
+				return errorResponse, sdkErrors.ErrDeckMissingContentIds
+			}
+
+			if errorResponse.Err == sdkErrors.ErrInvalidCards.Error() {
+				return errorResponse, sdkErrors.ErrInvalidCards
+			}
+		}
+
+		if resp.StatusCode() == http.StatusInternalServerError {
+			return errorResponse, sdkErrors.ErrDeckUpdateFailed
+		}
+	}
+
+	return resp.Result().(*apiModels.APIResponse), nil
 }
