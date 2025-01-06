@@ -54,3 +54,32 @@ func (api *SetApi) GetSet(code string, owner string) (*setModel.Set, error) {
 
 	return resp.Result().(*setModel.Set), nil
 }
+
+/*
+IndexSets Returns all sets in the database unmarshalled as card models. The limit parameter
+will be passed directly to the database query to limit the number of models returned
+*/
+func (api *SetApi) IndexSets(limit int) (*[]*setModel.Set, error) {
+	request := api.client.BuildRequest(&[]*setModel.Set{})
+
+	resp, err := request.Get(api.BaseUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return nil, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return nil, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			return nil, sdkErrors.ErrNoSets
+		}
+	}
+
+	return resp.Result().(*[]*setModel.Set), nil
+}
