@@ -1,6 +1,7 @@
 package set
 
 import (
+	apiModels "github.com/stevezaluk/mtgjson-models/api"
 	sdkErrors "github.com/stevezaluk/mtgjson-models/errors"
 	setModel "github.com/stevezaluk/mtgjson-models/set"
 	"github.com/stevezaluk/mtgjson-sdk-client/client"
@@ -82,4 +83,55 @@ func (api *SetApi) IndexSets(limit int) (*[]*setModel.Set, error) {
 	}
 
 	return resp.Result().(*[]*setModel.Set), nil
+}
+
+/*
+NewSet Insert a new set in the form of a model into the MongoDB database. The set model must have a
+valid name and set code, additionally the set cannot already exist under the same set code. Owner is
+the email address of the owner you want to assign the deck to. If the string is empty (i.e. == ""), it
+will be assigned to the system user
+*/
+func (api *SetApi) NewSet(set *setModel.Set, owner string) (*apiModels.APIResponse, error) {
+	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParam("owner", owner).SetBody(set)
+
+	resp, err := request.Post(api.BaseUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		errorResponse := resp.Error().(*apiModels.APIResponse)
+
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return errorResponse, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return errorResponse, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusConflict {
+			return errorResponse, sdkErrors.ErrSetAlreadyExists
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			if errorResponse.Err == sdkErrors.ErrInvalidObjectStructure.Error() {
+				return errorResponse, sdkErrors.ErrInvalidObjectStructure
+			}
+
+			if errorResponse.Err == sdkErrors.ErrSetMissingId.Error() {
+				return errorResponse, sdkErrors.ErrSetMissingId
+			}
+
+			if errorResponse.Err == sdkErrors.ErrMetaApiMustBeNull.Error() {
+				return errorResponse, sdkErrors.ErrMetaApiMustBeNull
+			}
+
+			if errorResponse.Err == sdkErrors.ErrInvalidCards.Error() {
+				return errorResponse, sdkErrors.ErrInvalidCards
+			}
+		}
+	}
+
+	return resp.Result().(*apiModels.APIResponse), nil
 }
