@@ -135,3 +135,39 @@ func (api *SetApi) NewSet(set *setModel.Set, owner string) (*apiModels.APIRespon
 
 	return resp.Result().(*apiModels.APIResponse), nil
 }
+
+/*
+DeleteSet Remove a set from the MongoDB database using the code passed in the parameter.
+Returns ErrNoSet if the set does not exist. Returns ErrSetDeleteFailed if the deleted count
+does not equal 1
+*/
+func (api *SetApi) DeleteSet(code string, owner string) (*apiModels.APIResponse, error) {
+	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner})
+
+	resp, err := request.Delete(api.BaseUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		errorResponse := resp.Error().(*apiModels.APIResponse)
+
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return errorResponse, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return errorResponse, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusNotFound {
+			return errorResponse, sdkErrors.ErrNoSet
+		}
+
+		if resp.StatusCode() == http.StatusInternalServerError {
+			return errorResponse, sdkErrors.ErrSetDeleteFailed
+		}
+	}
+
+	return resp.Result().(*apiModels.APIResponse), nil
+}
