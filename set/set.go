@@ -2,6 +2,7 @@ package set
 
 import (
 	apiModels "github.com/stevezaluk/mtgjson-models/api"
+	cardModel "github.com/stevezaluk/mtgjson-models/card"
 	sdkErrors "github.com/stevezaluk/mtgjson-models/errors"
 	setModel "github.com/stevezaluk/mtgjson-models/set"
 	"github.com/stevezaluk/mtgjson-sdk-client/client"
@@ -170,4 +171,41 @@ func (api *SetApi) DeleteSet(code string, owner string) (*apiModels.APIResponse,
 	}
 
 	return resp.Result().(*apiModels.APIResponse), nil
+}
+
+/*
+GetSetContents Return a list of CardSet models representing the contents of a specific set
+*/
+func (api *SetApi) GetSetContents(code string, owner string) (*[]*cardModel.CardSet, error) {
+	request := api.client.BuildRequest(&[]*cardModel.CardSet{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner})
+
+	resp, err := request.Get(api.BaseUrl + "/content")
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return nil, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return nil, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusNotFound {
+			return nil, sdkErrors.ErrNoSet
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			errorResponse := resp.Error().(*apiModels.APIResponse)
+			if errorResponse.Err == sdkErrors.ErrSetMissingId.Error() {
+				return nil, sdkErrors.ErrSetMissingId
+			} else {
+				return nil, sdkErrors.ErrNoCards
+			}
+		}
+	}
+
+	return resp.Result().(*[]*cardModel.CardSet), nil
 }
