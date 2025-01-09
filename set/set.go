@@ -209,3 +209,99 @@ func (api *SetApi) GetSetContents(code string, owner string) (*[]*cardModel.Card
 
 	return resp.Result().(*[]*cardModel.CardSet), nil
 }
+
+/*
+AddCards Add an instance of a card to a set
+*/
+func (api *SetApi) AddCards(code string, cards []string, owner string) (*apiModels.APIResponse, error) {
+	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner}).SetBody(cards)
+
+	resp, err := request.Post(api.BaseUrl + "/content")
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		errorResponse := resp.Error().(*apiModels.APIResponse)
+
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return errorResponse, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return errorResponse, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusNotFound {
+			return errorResponse, sdkErrors.ErrNoSet
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			if errorResponse.Err == sdkErrors.ErrSetMissingId.Error() {
+				return errorResponse, sdkErrors.ErrSetMissingId
+			}
+
+			if errorResponse.Err == sdkErrors.ErrSetNoCards.Error() {
+				return errorResponse, sdkErrors.ErrSetNoCards
+			}
+		}
+
+		if resp.StatusCode() == http.StatusInternalServerError {
+			return errorResponse, sdkErrors.ErrSetUpdateFailed
+		}
+	}
+
+	return resp.Result().(*apiModels.APIResponse), nil
+}
+
+/*
+RemoveCards Remove all instances of a card in a set
+*/
+func (api *SetApi) RemoveCards(code string, cards []string, owner string) (*apiModels.APIResponse, error) {
+	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner}).SetBody(cards)
+
+	resp, err := request.Delete(api.BaseUrl + "/content")
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Error() != nil {
+		errorResponse := resp.Error().(*apiModels.APIResponse)
+
+		if resp.StatusCode() == http.StatusUnauthorized {
+			return errorResponse, sdkErrors.ErrTokenInvalid
+		}
+
+		if resp.StatusCode() == http.StatusForbidden {
+			return errorResponse, sdkErrors.ErrInvalidPermissions
+		}
+
+		if resp.StatusCode() == http.StatusNotFound {
+			return errorResponse, sdkErrors.ErrNoSet
+		}
+
+		if resp.StatusCode() == http.StatusBadRequest {
+			if errorResponse.Err == sdkErrors.ErrSetMissingId.Error() {
+				return errorResponse, sdkErrors.ErrSetMissingId
+			}
+
+			if errorResponse.Err == sdkErrors.ErrSetNoCards.Error() {
+				return errorResponse, sdkErrors.ErrSetNoCards
+			}
+
+			if errorResponse.Err == sdkErrors.ErrInvalidCards.Error() {
+				return errorResponse, sdkErrors.ErrInvalidCards
+			}
+
+			if errorResponse.Err == sdkErrors.ErrInvalidObjectStructure.Error() {
+				return errorResponse, sdkErrors.ErrInvalidObjectStructure
+			}
+		}
+
+		if resp.StatusCode() == http.StatusInternalServerError {
+			return errorResponse, sdkErrors.ErrSetUpdateFailed
+		}
+	}
+
+	return resp.Result().(*apiModels.APIResponse), nil
+}
