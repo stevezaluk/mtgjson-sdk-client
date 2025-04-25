@@ -2,7 +2,7 @@ module github.com/stevezaluk/mtgjson-sdk-client
 
 go 1.23.2
 
-require github.com/stevezaluk/mtgjson-models v1.3.3 // direct
+require github.com/stevezaluk/mtgjson-models v1.3.9 // direct
 
 require (
 	github.com/auth0/go-auth0 v1.13.1
