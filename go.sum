@@ -51,6 +51,8 @@ github.com/stevezaluk/mtgjson-models v1.3.2 h1:teoGJ9rfZf0DjtR2XQRtmQelbhD7DgPNS
 github.com/stevezaluk/mtgjson-models v1.3.2/go.mod h1:7Vu7I83df9TLplzc1druToaY4ngMw1BHsr+ndFNqkpo=
 github.com/stevezaluk/mtgjson-models v1.3.3 h1:EKSVmzyZQk1Y9fFF+XnwEIkettufw6SHcDRD0faTND0=
 github.com/stevezaluk/mtgjson-models v1.3.3/go.mod h1:7Vu7I83df9TLplzc1druToaY4ngMw1BHsr+ndFNqkpo=
+github.com/stevezaluk/mtgjson-models v1.3.9 h1:DAKtSEqTcg1k68qt6MwP1nme2w+fhKJki99HbfENz+s=
+github.com/stevezaluk/mtgjson-models v1.3.9/go.mod h1:7Vu7I83df9TLplzc1druToaY4ngMw1BHsr+ndFNqkpo=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
