@@ -3,7 +3,6 @@ package auth
 import (
 	"errors"
 	"github.com/auth0/go-auth0/authentication/oauth"
-	"github.com/spf13/viper"
 	apiModels "github.com/stevezaluk/mtgjson-models/api"
 	sdkErrors "github.com/stevezaluk/mtgjson-models/errors"
 	"github.com/stevezaluk/mtgjson-sdk-client/client"
@@ -71,21 +70,6 @@ func (api *AuthAPI) Login(email string, password string) (*oauth.TokenSet, error
 	}
 
 	return resp.Result().(*oauth.TokenSet), nil
-}
-
-/*
-SetAuthToken Make a login request for the user and set the auth token for this session
-*/
-func (api *AuthAPI) SetAuthToken(email string, password string) error {
-	tokenSet, err := api.Login(email, password)
-	if err != nil {
-		return err
-	}
-
-	viper.Set("api.token_str", tokenSet.AccessToken)
-	viper.Set("api.token", tokenSet)
-
-	return nil
 }
 
 /*
