@@ -9,18 +9,18 @@ import (
 )
 
 /*
-UserApi A representation of the user namespace for the MTGJSON API
+UserAPI - A representation of the user namespace for the MTGJSON API
 */
-type UserApi struct {
+type UserAPI struct {
 	BaseUrl string
 	client  *client.HTTPClient
 }
 
 /*
-New Create a new instance of the UserApi struct
+New Create a new instance of the UserAPI struct
 */
-func New(baseUrl string, client *client.HTTPClient) *UserApi {
-	return &UserApi{
+func New(baseUrl string, client *client.HTTPClient) *UserAPI {
+	return &UserAPI{
 		BaseUrl: baseUrl,
 		client:  client,
 	}
@@ -30,7 +30,7 @@ func New(baseUrl string, client *client.HTTPClient) *UserApi {
 GetUser Fetch a user based on their email address. Returns ErrNoUser if the user cannot be found
 and ErrInvalidEmail if an empty string or invalid email address is passed in the parameter
 */
-func (api *UserApi) GetUser(email string) (*userModel.User, error) {
+func (api *UserAPI) GetUser(email string) (*userModel.User, error) {
 	request := api.client.BuildRequest(&userModel.User{}).SetQueryParam("email", email)
 
 	resp, err := request.Get(api.BaseUrl)
@@ -60,7 +60,7 @@ func (api *UserApi) GetUser(email string) (*userModel.User, error) {
 /*
 DeactivateUser Completely removes the requested user account, both from Auth0 and from MongoDB
 */
-func (api *UserApi) DeactivateUser(email string) (*apiModels.APIResponse, error) {
+func (api *UserAPI) DeactivateUser(email string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParam("email", email)
 
 	resp, err := request.Delete(api.BaseUrl)

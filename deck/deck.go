@@ -9,20 +9,20 @@ import (
 )
 
 /*
-DeckApi A representation of the deck namespace for the MTGJSON API
+DeckAPI A representation of the deck namespace for the MTGJSON API
 */
-type DeckApi struct {
+type DeckAPI struct {
 	BaseUrl string
 	client  *client.HTTPClient
 }
 
 /*
-New Create a new instance of the DeckApi struct
+New Create a new instance of the DeckAPI struct
 */
-func New(baseUrl string, client *client.HTTPClient) *DeckApi {
+func New(baseUrl string, client *client.HTTPClient) *DeckAPI {
 	// add check to validate baseUrl here
 
-	return &DeckApi{
+	return &DeckAPI{
 		BaseUrl: baseUrl,
 		client:  client,
 	}
@@ -33,7 +33,7 @@ GetDeck Fetch a deck from the MongoDB database using the code passed in the para
 is the email address of the user that you want to assign to the deck. If the string is empty
 then it does not filter by user. Returns ErrNoDeck if the deck does not exist or cannot be located
 */
-func (api *DeckApi) GetDeck(code string, owner string) (*deckModel.Deck, error) {
+func (api *DeckAPI) GetDeck(code string, owner string) (*deckModel.Deck, error) {
 	request := api.client.BuildRequest(&deckModel.Deck{}).
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner})
 
@@ -69,7 +69,7 @@ valid name and deck code, additionally the deck cannot already exist under the s
 the email address of the owner you want to assign the deck to. If the string is empty, it will be assigned
 to the system user
 */
-func (api *DeckApi) NewDeck(deck *deckModel.Deck, owner string) (*apiModels.APIResponse, error) {
+func (api *DeckAPI) NewDeck(deck *deckModel.Deck, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetQueryParam("owner", owner).
 		SetBody(deck)
@@ -120,7 +120,7 @@ DeleteDeck Remove a deck from the MongoDB database using the code passed in the
 parameter. Returns ErrNoDeck if the deck does not exist. Returns
 ErrDeckDeleteFailed if the deleted count does not equal 1
 */
-func (api *DeckApi) DeleteDeck(code string, owner string) (*apiModels.APIResponse, error) {
+func (api *DeckAPI) DeleteDeck(code string, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner})
 
@@ -160,7 +160,7 @@ func (api *DeckApi) DeleteDeck(code string, owner string) (*apiModels.APIRespons
 GetDeckContents Update the 'contents' field of the deck passed in the parameter. This accepts a
 pointer and updates this in place to avoid having to copy large amounts of data
 */
-func (api *DeckApi) GetDeckContents(code string, owner string) (*deckModel.DeckContents, error) {
+func (api *DeckAPI) GetDeckContents(code string, owner string) (*deckModel.DeckContents, error) {
 	request := api.client.BuildRequest(&deckModel.DeckContents{}).SetQueryParams(map[string]string{"deckCode": code, "owner": owner})
 
 	resp, err := request.Get(api.BaseUrl + "/content")
@@ -193,7 +193,7 @@ func (api *DeckApi) GetDeckContents(code string, owner string) (*deckModel.DeckC
 AddCards Update the content ids in the deck model passed with new cards. This should
 probably validate cards in the future
 */
-func (api *DeckApi) AddCards(code string, cards *deckModel.DeckContentIds, owner string) (*apiModels.APIResponse, error) {
+func (api *DeckAPI) AddCards(code string, cards *deckModel.DeckContentIds, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner}).
 		SetBody(cards)
@@ -244,7 +244,7 @@ func (api *DeckApi) AddCards(code string, cards *deckModel.DeckContentIds, owner
 	return resp.Result().(*apiModels.APIResponse), nil
 }
 
-func (api *DeckApi) RemoveCards(code string, cards *deckModel.DeckContentIds, owner string) (*apiModels.APIResponse, error) {
+func (api *DeckAPI) RemoveCards(code string, cards *deckModel.DeckContentIds, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner}).
 		SetBody(cards)

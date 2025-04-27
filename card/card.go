@@ -9,20 +9,20 @@ import (
 )
 
 /*
-CardApi A representation of the card namespace for the MTGJSON API
+CardAPI A representation of the card namespace for the MTGJSON API
 */
-type CardApi struct {
+type CardAPI struct {
 	BaseUrl string
 	client  *client.HTTPClient
 }
 
 /*
-New Create a new instance of the CardApi struct
+New Create a new instance of the CardAPI struct
 */
-func New(baseUrl string, client *client.HTTPClient) *CardApi {
+func New(baseUrl string, client *client.HTTPClient) *CardAPI {
 	// add error check for invalid url here
 
-	return &CardApi{
+	return &CardAPI{
 		BaseUrl: baseUrl,
 		client:  client,
 	}
@@ -32,7 +32,7 @@ func New(baseUrl string, client *client.HTTPClient) *CardApi {
 GetCard Takes a single string representing an MTGJSONv4 UUID and return a card model
 for it
 */
-func (api *CardApi) GetCard(uuid string, owner string) (*cardModel.CardSet, error) {
+func (api *CardAPI) GetCard(uuid string, owner string) (*cardModel.CardSet, error) {
 	request := api.client.BuildRequest(&cardModel.CardSet{}).SetQueryParams(map[string]string{"cardId": uuid, "owner": owner})
 
 	resp, err := request.Get(api.BaseUrl)
@@ -68,7 +68,7 @@ func (api *CardApi) GetCard(uuid string, owner string) (*cardModel.CardSet, erro
 IndexCards Returns all cards in the database unmarshalled as card models. The limit parameter
 will be passed directly to the database query to limit the number of models returned
 */
-func (api *CardApi) IndexCards() (*[]*cardModel.CardSet, error) {
+func (api *CardAPI) IndexCards() (*[]*cardModel.CardSet, error) {
 	request := api.client.BuildRequest(&[]*cardModel.CardSet{})
 
 	resp, err := request.Get(api.BaseUrl)
@@ -97,7 +97,7 @@ func (api *CardApi) IndexCards() (*[]*cardModel.CardSet, error) {
 NewCard Insert a new card in the form of a model into the MongoDB database. The card model must have a
 valid name and MTGJSONv4 ID, additionally, the card cannot already exist under the same ID
 */
-func (api *CardApi) NewCard(card *cardModel.CardSet, owner string) (*apiModels.APIResponse, error) {
+func (api *CardAPI) NewCard(card *cardModel.CardSet, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetBody(card).
 		SetQueryParam("owner", owner)
@@ -135,7 +135,7 @@ DeleteCard Remove a card from the MongoDB database. The UUID passed in the param
 ErrNoCard will be returned if no card exists under the passed UUID, and ErrCardDeleteFailed will be returned
 if the deleted count does not equal 1
 */
-func (api *CardApi) DeleteCard(uuid string, owner string) (*apiModels.APIResponse, error) {
+func (api *CardAPI) DeleteCard(uuid string, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetQueryParams(map[string]string{"cardId": uuid, "owner": owner})
 

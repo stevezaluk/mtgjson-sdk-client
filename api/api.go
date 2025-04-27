@@ -16,11 +16,11 @@ MtgjsonAPI - A representation of the MTGJSON API and all of its routes
 */
 type MtgjsonAPI struct {
 	client *client.HTTPClient
-	Card   *card.CardApi
-	Deck   *deck.DeckApi
-	Set    *set.SetApi
-	Auth   *auth.AuthApi
-	User   *user.UserApi
+	Card   *card.CardAPI
+	Deck   *deck.DeckAPI
+	Set    *set.SetAPI
+	Auth   *auth.AuthAPI
+	User   *user.UserAPI
 }
 
 /*

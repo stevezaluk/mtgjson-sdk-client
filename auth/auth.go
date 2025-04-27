@@ -11,17 +11,17 @@ import (
 )
 
 /*
-AuthApi A representation of the auth namespace for the MTGJSON API
+AuthAPI A representation of the auth namespace for the MTGJSON API
 */
-type AuthApi struct {
+type AuthAPI struct {
 	client *client.HTTPClient
 }
 
 /*
-New Create a new instance of the AuthApi struct
+New Create a new instance of the AuthAPI struct
 */
-func New(client *client.HTTPClient) *AuthApi {
-	return &AuthApi{
+func New(client *client.HTTPClient) *AuthAPI {
+	return &AuthAPI{
 		client: client,
 	}
 }
@@ -29,7 +29,7 @@ func New(client *client.HTTPClient) *AuthApi {
 /*
 Login Exchange user credentials for an oauth.TokenSet
 */
-func (api *AuthApi) Login(email string, password string) (*oauth.TokenSet, error) {
+func (api *AuthAPI) Login(email string, password string) (*oauth.TokenSet, error) {
 	request := api.client.BuildRequest(&oauth.TokenSet{}).
 		SetBody(apiModels.LoginRequest{
 			Email:    email,
@@ -57,7 +57,7 @@ func (api *AuthApi) Login(email string, password string) (*oauth.TokenSet, error
 /*
 SetAuthToken Make a login request for the user and set the auth token for this session
 */
-func (api *AuthApi) SetAuthToken(email string, password string) error {
+func (api *AuthAPI) SetAuthToken(email string, password string) error {
 	tokenSet, err := api.Login(email, password)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (api *AuthApi) SetAuthToken(email string, password string) error {
 /*
 RegisterUser Register a new user with Auth0 and store there user model within the MongoDB database
 */
-func (api *AuthApi) RegisterUser(email string, username string, password string) (*apiModels.APIResponse, error) {
+func (api *AuthAPI) RegisterUser(email string, username string, password string) (*apiModels.APIResponse, error) {
 	if email == "" || username == "" || password == "" {
 		return nil, sdkErrors.ErrUserMissingId
 	}
@@ -116,7 +116,7 @@ func (api *AuthApi) RegisterUser(email string, username string, password string)
 /*
 ResetUserPassword Send a reset password email to a specified user account
 */
-func (api *AuthApi) ResetUserPassword(email string) (*apiModels.APIResponse, error) {
+func (api *AuthAPI) ResetUserPassword(email string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParam("email", email)
 
 	resp, err := request.Get(viper.GetString("api.base_url") + "/reset")
