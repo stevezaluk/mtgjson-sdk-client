@@ -12,8 +12,11 @@ import (
 DeckAPI A representation of the deck namespace for the MTGJSON API
 */
 type DeckAPI struct {
-	BaseUrl string
-	client  *client.HTTPClient
+	// baseUrl - The baseUrl with its associating endpoint attached to it, used for making HTTP requests
+	baseUrl string
+
+	// client - A pointer to the client.HTTPClient structure that is used for HTTP requests
+	client *client.HTTPClient
 }
 
 /*
@@ -23,7 +26,7 @@ func New(baseUrl string, client *client.HTTPClient) *DeckAPI {
 	// add check to validate baseUrl here
 
 	return &DeckAPI{
-		BaseUrl: baseUrl,
+		baseUrl: baseUrl,
 		client:  client,
 	}
 }
@@ -37,7 +40,7 @@ func (api *DeckAPI) GetDeck(code string, owner string) (*deckModel.Deck, error) 
 	request := api.client.BuildRequest(&deckModel.Deck{}).
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner})
 
-	resp, err := request.Get(api.BaseUrl)
+	resp, err := request.Get(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +77,7 @@ func (api *DeckAPI) NewDeck(deck *deckModel.Deck, owner string) (*apiModels.APIR
 		SetQueryParam("owner", owner).
 		SetBody(deck)
 
-	resp, err := request.Post(api.BaseUrl)
+	resp, err := request.Post(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +127,7 @@ func (api *DeckAPI) DeleteDeck(code string, owner string) (*apiModels.APIRespons
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner})
 
-	resp, err := request.Delete(api.BaseUrl)
+	resp, err := request.Delete(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +166,7 @@ pointer and updates this in place to avoid having to copy large amounts of data
 func (api *DeckAPI) GetDeckContents(code string, owner string) (*deckModel.DeckContents, error) {
 	request := api.client.BuildRequest(&deckModel.DeckContents{}).SetQueryParams(map[string]string{"deckCode": code, "owner": owner})
 
-	resp, err := request.Get(api.BaseUrl + "/content")
+	resp, err := request.Get(api.baseUrl + "/content")
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +201,7 @@ func (api *DeckAPI) AddCards(code string, cards *deckModel.DeckContentIds, owner
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner}).
 		SetBody(cards)
 
-	resp, err := request.Post(api.BaseUrl + "/content")
+	resp, err := request.Post(api.baseUrl + "/content")
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +252,7 @@ func (api *DeckAPI) RemoveCards(code string, cards *deckModel.DeckContentIds, ow
 		SetQueryParams(map[string]string{"deckCode": code, "owner": owner}).
 		SetBody(cards)
 
-	resp, err := request.Delete(api.BaseUrl + "/content")
+	resp, err := request.Delete(api.baseUrl + "/content")
 	if err != nil {
 		return nil, err
 	}

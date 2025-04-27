@@ -12,8 +12,11 @@ import (
 UserAPI - A representation of the user namespace for the MTGJSON API
 */
 type UserAPI struct {
-	BaseUrl string
-	client  *client.HTTPClient
+	// baseUrl - The baseUrl with its associating endpoint attached to it, used for making HTTP requests
+	baseUrl string
+
+	// client - A pointer to the client.HTTPClient structure that is used for HTTP requests
+	client *client.HTTPClient
 }
 
 /*
@@ -21,7 +24,7 @@ New Create a new instance of the UserAPI struct
 */
 func New(baseUrl string, client *client.HTTPClient) *UserAPI {
 	return &UserAPI{
-		BaseUrl: baseUrl,
+		baseUrl: baseUrl,
 		client:  client,
 	}
 }
@@ -33,7 +36,7 @@ and ErrInvalidEmail if an empty string or invalid email address is passed in the
 func (api *UserAPI) GetUser(email string) (*userModel.User, error) {
 	request := api.client.BuildRequest(&userModel.User{}).SetQueryParam("email", email)
 
-	resp, err := request.Get(api.BaseUrl)
+	resp, err := request.Get(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +66,7 @@ DeactivateUser Completely removes the requested user account, both from Auth0 an
 func (api *UserAPI) DeactivateUser(email string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParam("email", email)
 
-	resp, err := request.Delete(api.BaseUrl)
+	resp, err := request.Delete(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}

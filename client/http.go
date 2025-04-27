@@ -10,6 +10,7 @@ HTTPClient Simple abstraction of an HTTP Client that can be passed in between th
 of each API
 */
 type HTTPClient struct {
+	// Client - The resty.Client structure that is shared across the API namespaces
 	Client *resty.Client
 }
 

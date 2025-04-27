@@ -12,18 +12,21 @@ import (
 CardAPI A representation of the card namespace for the MTGJSON API
 */
 type CardAPI struct {
-	BaseUrl string
-	client  *client.HTTPClient
+	// baseUrl - The baseUrl with its associating endpoint attached to it, used for making HTTP requests
+	baseUrl string
+
+	// client - A pointer to the client.HTTPClient structure that is used for HTTP requests
+	client *client.HTTPClient
 }
 
 /*
 New Create a new instance of the CardAPI struct
 */
-func New(baseUrl string, client *client.HTTPClient) *CardAPI {
+func New(baseURL string, client *client.HTTPClient) *CardAPI {
 	// add error check for invalid url here
 
 	return &CardAPI{
-		BaseUrl: baseUrl,
+		baseUrl: baseURL,
 		client:  client,
 	}
 }
@@ -35,7 +38,7 @@ for it
 func (api *CardAPI) GetCard(uuid string, owner string) (*cardModel.CardSet, error) {
 	request := api.client.BuildRequest(&cardModel.CardSet{}).SetQueryParams(map[string]string{"cardId": uuid, "owner": owner})
 
-	resp, err := request.Get(api.BaseUrl)
+	resp, err := request.Get(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +74,7 @@ will be passed directly to the database query to limit the number of models retu
 func (api *CardAPI) IndexCards() (*[]*cardModel.CardSet, error) {
 	request := api.client.BuildRequest(&[]*cardModel.CardSet{})
 
-	resp, err := request.Get(api.BaseUrl)
+	resp, err := request.Get(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +105,7 @@ func (api *CardAPI) NewCard(card *cardModel.CardSet, owner string) (*apiModels.A
 		SetBody(card).
 		SetQueryParam("owner", owner)
 
-	resp, err := request.Post(api.BaseUrl)
+	resp, err := request.Post(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +142,7 @@ func (api *CardAPI) DeleteCard(uuid string, owner string) (*apiModels.APIRespons
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).
 		SetQueryParams(map[string]string{"cardId": uuid, "owner": owner})
 
-	resp, err := request.Delete(api.BaseUrl)
+	resp, err := request.Delete(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}

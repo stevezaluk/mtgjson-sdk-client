@@ -13,8 +13,11 @@ import (
 SetAPI A representation of the set namespace for the MTGJSON API
 */
 type SetAPI struct {
-	BaseUrl string
-	client  *client.HTTPClient
+	// baseUrl - The baseUrl with its associating endpoint attached to it, used for making HTTP requests
+	baseUrl string
+
+	// client - A pointer to the client.HTTPClient structure that is used for HTTP requests
+	client *client.HTTPClient
 }
 
 /*
@@ -22,7 +25,7 @@ New Create a new instance of the SetAPI struct
 */
 func New(baseUrl string, client *client.HTTPClient) *SetAPI {
 	return &SetAPI{
-		BaseUrl: baseUrl,
+		baseUrl: baseUrl,
 		client:  client,
 	}
 }
@@ -35,7 +38,7 @@ func (api *SetAPI) GetSet(code string, owner string) (*setModel.Set, error) {
 	request := api.client.BuildRequest(&setModel.Set{}).
 		SetQueryParams(map[string]string{"setCode": code, "owner": owner})
 
-	resp, err := request.Get(api.BaseUrl)
+	resp, err := request.Get(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +67,7 @@ will be passed directly to the database query to limit the number of models retu
 func (api *SetAPI) IndexSets(limit int) (*[]*setModel.Set, error) {
 	request := api.client.BuildRequest(&[]*setModel.Set{})
 
-	resp, err := request.Get(api.BaseUrl)
+	resp, err := request.Get(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +98,7 @@ will be assigned to the system user
 func (api *SetAPI) NewSet(set *setModel.Set, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParam("owner", owner).SetBody(set)
 
-	resp, err := request.Post(api.BaseUrl)
+	resp, err := request.Post(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +148,7 @@ does not equal 1
 func (api *SetAPI) DeleteSet(code string, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner})
 
-	resp, err := request.Delete(api.BaseUrl)
+	resp, err := request.Delete(api.baseUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +182,7 @@ GetSetContents Return a list of CardSet models representing the contents of a sp
 func (api *SetAPI) GetSetContents(code string, owner string) (*[]*cardModel.CardSet, error) {
 	request := api.client.BuildRequest(&[]*cardModel.CardSet{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner})
 
-	resp, err := request.Get(api.BaseUrl + "/content")
+	resp, err := request.Get(api.baseUrl + "/content")
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +219,7 @@ AddCards Add an instance of a card to a set
 func (api *SetAPI) AddCards(code string, cards []string, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner}).SetBody(cards)
 
-	resp, err := request.Post(api.BaseUrl + "/content")
+	resp, err := request.Post(api.baseUrl + "/content")
 	if err != nil {
 		return nil, err
 	}
@@ -260,7 +263,7 @@ RemoveCards Remove all instances of a card in a set
 func (api *SetAPI) RemoveCards(code string, cards []string, owner string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParams(map[string]string{"setCode": code, "owner": owner}).SetBody(cards)
 
-	resp, err := request.Delete(api.BaseUrl + "/content")
+	resp, err := request.Delete(api.baseUrl + "/content")
 	if err != nil {
 		return nil, err
 	}

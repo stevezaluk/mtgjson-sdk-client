@@ -14,6 +14,7 @@ import (
 AuthAPI A representation of the auth namespace for the MTGJSON API
 */
 type AuthAPI struct {
+	// client - A pointer to the client.HTTPClient structure that is used for HTTP requests
 	client *client.HTTPClient
 }
 
