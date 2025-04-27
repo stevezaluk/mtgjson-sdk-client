@@ -10,8 +10,8 @@ HTTPClient Simple abstraction of an HTTP Client that can be passed in between th
 of each API
 */
 type HTTPClient struct {
-	// Client - The resty.Client structure that is shared across the API namespaces
-	Client *resty.Client
+	// client - The resty.Client structure that is shared across the API namespaces
+	client *resty.Client
 }
 
 /*
@@ -20,8 +20,15 @@ and then passed between each namespace of the API
 */
 func New() *HTTPClient {
 	return &HTTPClient{
-		Client: resty.New(),
+		client: resty.New(),
 	}
+}
+
+/*
+Client - Returns a pointer to the resty.Client structure that is shared across API namespaces
+*/
+func (client *HTTPClient) Client() *resty.Client {
+	return client.client
 }
 
 /*
@@ -35,7 +42,7 @@ func (client *HTTPClient) SetBearerToken(token string, request *resty.Request) {
 BuildRequest Builds a new resty request automatically, filling in the headers and the authentication token
 */
 func (client *HTTPClient) BuildRequest(result interface{}) *resty.Request {
-	request := client.Client.R().
+	request := client.Client().R().
 		SetHeader("Accept", "application/json").
 		SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0").
 		SetResult(result).
