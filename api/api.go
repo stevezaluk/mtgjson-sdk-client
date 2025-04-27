@@ -8,6 +8,7 @@ import (
 	"github.com/stevezaluk/mtgjson-sdk-client/deck"
 	"github.com/stevezaluk/mtgjson-sdk-client/set"
 	"github.com/stevezaluk/mtgjson-sdk-client/user"
+	"strconv"
 )
 
 /*
@@ -23,12 +24,19 @@ type MtgjsonApi struct {
 }
 
 /*
-New Initialize a new MTGJSON API object
+New - Construct a new MtgjsonAPI structure using a hostname and port. If useSSL is set
+to true then the protocol will be switched to HTTPS
 */
-func New() *MtgjsonApi {
+func New(hostname string, port int, useSSL bool) *MtgjsonApi {
 	httpClient := client.NewHttpClient()
 
-	baseUrl := viper.GetString("api.base_url")
+	protocol := "http://"
+	if useSSL {
+		protocol = "https://"
+	}
+
+	baseUrl := protocol + hostname + ":" + strconv.Itoa(port)
+
 	return &MtgjsonApi{
 		Client: httpClient,
 		Card:   card.New(baseUrl+"/card", httpClient),
@@ -37,4 +45,15 @@ func New() *MtgjsonApi {
 		Auth:   auth.New(httpClient),
 		User:   user.New(baseUrl+"/user", httpClient),
 	}
+}
+
+/*
+FromConfig - Construct a new MtgjsonAPI structure using viper config values
+*/
+func FromConfig() *MtgjsonApi {
+	return New(
+		viper.GetString("api.hostname"),
+		viper.GetInt("api.port"),
+		viper.GetBool("api.use_ssl"),
+	)
 }
