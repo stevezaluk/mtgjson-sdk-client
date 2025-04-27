@@ -75,3 +75,17 @@ Client - Returns a pointer to the client.HTTPClient structure that is used for H
 func (api *MtgjsonAPI) Client() *client.HTTPClient {
 	return api.client
 }
+
+/*
+SetEmailPasswordAuth - Fetches a token for the client.HTTPClient to use in authenticated requests
+*/
+func (api *MtgjsonAPI) SetEmailPasswordAuth(email string, password string) error {
+	tokenSet, err := api.Auth.Login(email, password)
+	if err != nil {
+		return err
+	}
+
+	api.Client().SetBearerToken(tokenSet)
+
+	return nil
+}
