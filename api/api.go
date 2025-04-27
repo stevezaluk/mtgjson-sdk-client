@@ -15,12 +15,23 @@ import (
 MtgjsonAPI - A representation of the MTGJSON API and all of its routes
 */
 type MtgjsonAPI struct {
+	// client - A pointer to the client.HTTPClient structure that is used for HTTP requests
 	client *client.HTTPClient
-	Card   *card.CardAPI
-	Deck   *deck.DeckAPI
-	Set    *set.SetAPI
-	Auth   *auth.AuthAPI
-	User   *user.UserAPI
+
+	// Card - A pointer to the CardAPI namespace, used for making HTTP requests to the /card endpoint
+	Card *card.CardAPI
+
+	// Deck - A pointer to the DeckAPI namespace, used for making HTTP requests to the /deck endpoint
+	Deck *deck.DeckAPI
+
+	// Set - A pointer to the SetAPI namespace, used for making HTTP requests to the /set endpoint
+	Set *set.SetAPI
+
+	// Auth - A pointer to the AuthAPI namespace, used for making HTTP requests to the /login and /register endpoints
+	Auth *auth.AuthAPI
+
+	// User - A pointer to the UserAPI namespace, used for making HTTP requests to the /user endpoint
+	User *user.UserAPI
 }
 
 /*
@@ -59,7 +70,7 @@ func FromConfig() *MtgjsonAPI {
 }
 
 /*
-Client - Returns a pointer to the underlying HTTP client used to make requests
+Client - Returns a pointer to the client.HTTPClient structure that is used for HTTP requests
 */
 func (api *MtgjsonAPI) Client() *client.HTTPClient {
 	return api.client
