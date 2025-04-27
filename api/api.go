@@ -28,7 +28,7 @@ New - Construct a new MtgjsonAPI structure using a hostname and port. If useSSL 
 to true then the protocol will be switched to HTTPS
 */
 func New(hostname string, port int, useSSL bool) *MtgjsonAPI {
-	httpClient := client.NewHttpClient()
+	httpClient := client.New()
 
 	protocol := "http://"
 	if useSSL {
