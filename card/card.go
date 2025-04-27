@@ -32,6 +32,20 @@ func New(baseURL string, client *client.HTTPClient) *CardAPI {
 }
 
 /*
+BaseURL - Returns the baseUrl with its associating endpoint attached to it, used for making HTTP requests
+*/
+func (api *CardAPI) BaseURL() string {
+	return api.baseUrl
+}
+
+/*
+Client - Returns a pointer to the client.HTTPClient structure that is used for HTTP requests
+*/
+func (api *CardAPI) Client() *client.HTTPClient {
+	return api.client
+}
+
+/*
 GetCard Takes a single string representing an MTGJSONv4 UUID and return a card model
 for it
 */

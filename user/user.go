@@ -30,6 +30,20 @@ func New(baseUrl string, client *client.HTTPClient) *UserAPI {
 }
 
 /*
+BaseURL - Returns the baseUrl with its associating endpoint attached to it, used for making HTTP requests
+*/
+func (api *UserAPI) BaseURL() string {
+	return api.baseUrl
+}
+
+/*
+Client - Returns a pointer to the client.HTTPClient structure that is used for HTTP requests
+*/
+func (api *UserAPI) Client() *client.HTTPClient {
+	return api.client
+}
+
+/*
 GetUser Fetch a user based on their email address. Returns ErrNoUser if the user cannot be found
 and ErrInvalidEmail if an empty string or invalid email address is passed in the parameter
 */

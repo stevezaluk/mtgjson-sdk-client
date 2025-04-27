@@ -32,6 +32,20 @@ func New(baseUrl string, client *client.HTTPClient) *DeckAPI {
 }
 
 /*
+BaseURL - Returns the baseUrl with its associating endpoint attached to it, used for making HTTP requests
+*/
+func (api *DeckAPI) BaseURL() string {
+	return api.baseUrl
+}
+
+/*
+Client - Returns a pointer to the client.HTTPClient structure that is used for HTTP requests
+*/
+func (api *DeckAPI) Client() *client.HTTPClient {
+	return api.client
+}
+
+/*
 GetDeck Fetch a deck from the MongoDB database using the code passed in the parameter. Owner
 is the email address of the user that you want to assign to the deck. If the string is empty
 then it does not filter by user. Returns ErrNoDeck if the deck does not exist or cannot be located
