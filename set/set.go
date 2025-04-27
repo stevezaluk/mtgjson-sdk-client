@@ -21,6 +21,16 @@ type SetAPI struct {
 }
 
 /*
+New Create a new instance of the SetAPI struct
+*/
+func New(baseUrl string, client *client.HTTPClient) *SetAPI {
+	return &SetAPI{
+		baseUrl: baseUrl + "/set",
+		client:  client,
+	}
+}
+
+/*
 BaseURL - Returns the baseUrl with its associating endpoint attached to it, used for making HTTP requests
 */
 func (api *SetAPI) BaseURL() string {
@@ -32,16 +42,6 @@ Client - Returns a pointer to the client.HTTPClient structure that is used for H
 */
 func (api *SetAPI) Client() *client.HTTPClient {
 	return api.client
-}
-
-/*
-New Create a new instance of the SetAPI struct
-*/
-func New(baseUrl string, client *client.HTTPClient) *SetAPI {
-	return &SetAPI{
-		baseUrl: baseUrl + "/set",
-		client:  client,
-	}
 }
 
 /*
