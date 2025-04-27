@@ -12,9 +12,9 @@ import (
 )
 
 /*
-MtgjsonApi A representation of the MTGJSON API and all of its routes
+MtgjsonAPI - A representation of the MTGJSON API and all of its routes
 */
-type MtgjsonApi struct {
+type MtgjsonAPI struct {
 	Client *client.HTTPClient
 	Card   *card.CardApi
 	Deck   *deck.DeckApi
@@ -27,7 +27,7 @@ type MtgjsonApi struct {
 New - Construct a new MtgjsonAPI structure using a hostname and port. If useSSL is set
 to true then the protocol will be switched to HTTPS
 */
-func New(hostname string, port int, useSSL bool) *MtgjsonApi {
+func New(hostname string, port int, useSSL bool) *MtgjsonAPI {
 	httpClient := client.NewHttpClient()
 
 	protocol := "http://"
@@ -37,7 +37,7 @@ func New(hostname string, port int, useSSL bool) *MtgjsonApi {
 
 	baseUrl := protocol + hostname + ":" + strconv.Itoa(port)
 
-	return &MtgjsonApi{
+	return &MtgjsonAPI{
 		Client: httpClient,
 		Card:   card.New(baseUrl+"/card", httpClient),
 		Deck:   deck.New(baseUrl+"/deck", httpClient),
@@ -50,7 +50,7 @@ func New(hostname string, port int, useSSL bool) *MtgjsonApi {
 /*
 FromConfig - Construct a new MtgjsonAPI structure using viper config values
 */
-func FromConfig() *MtgjsonApi {
+func FromConfig() *MtgjsonAPI {
 	return New(
 		viper.GetString("api.hostname"),
 		viper.GetInt("api.port"),
