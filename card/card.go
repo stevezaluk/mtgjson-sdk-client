@@ -26,7 +26,7 @@ func New(baseURL string, client *client.HTTPClient) *CardAPI {
 	// add error check for invalid url here
 
 	return &CardAPI{
-		baseUrl: baseURL,
+		baseUrl: baseURL + "/card",
 		client:  client,
 	}
 }

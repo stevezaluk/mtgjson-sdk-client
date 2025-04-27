@@ -39,7 +39,7 @@ New Create a new instance of the SetAPI struct
 */
 func New(baseUrl string, client *client.HTTPClient) *SetAPI {
 	return &SetAPI{
-		baseUrl: baseUrl,
+		baseUrl: baseUrl + "/set",
 		client:  client,
 	}
 }

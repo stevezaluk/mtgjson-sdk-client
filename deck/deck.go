@@ -26,7 +26,7 @@ func New(baseUrl string, client *client.HTTPClient) *DeckAPI {
 	// add check to validate baseUrl here
 
 	return &DeckAPI{
-		baseUrl: baseUrl,
+		baseUrl: baseUrl + "/deck",
 		client:  client,
 	}
 }

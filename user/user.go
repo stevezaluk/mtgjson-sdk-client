@@ -24,7 +24,7 @@ New Create a new instance of the UserAPI struct
 */
 func New(baseUrl string, client *client.HTTPClient) *UserAPI {
 	return &UserAPI{
-		baseUrl: baseUrl,
+		baseUrl: baseUrl + "/user",
 		client:  client,
 	}
 }

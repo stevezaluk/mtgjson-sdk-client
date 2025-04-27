@@ -50,11 +50,11 @@ func New(hostname string, port int, useSSL bool) *MtgjsonAPI {
 
 	return &MtgjsonAPI{
 		client: httpClient,
-		Card:   card.New(baseUrl+"/card", httpClient),
-		Deck:   deck.New(baseUrl+"/deck", httpClient),
-		Set:    set.New(baseUrl+"/set", httpClient),
+		Card:   card.New(baseUrl, httpClient),
+		Deck:   deck.New(baseUrl, httpClient),
+		Set:    set.New(baseUrl, httpClient),
 		Auth:   auth.New(baseUrl, httpClient),
-		User:   user.New(baseUrl+"/user", httpClient),
+		User:   user.New(baseUrl, httpClient),
 	}
 }
 
