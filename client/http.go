@@ -2,7 +2,6 @@ package client
 
 import (
 	"github.com/go-resty/resty/v2"
-	"github.com/spf13/viper"
 	apiModels "github.com/stevezaluk/mtgjson-models/api"
 )
 
@@ -15,13 +14,20 @@ type HTTPClient struct {
 }
 
 /*
-NewHttpClient Constructor function for building a new HTTP Client. This should get called once
+New Constructor function for building a new HTTP Client. This should get called once
 and then passed between each namespace of the API
 */
-func NewHttpClient() *HTTPClient {
+func New() *HTTPClient {
 	return &HTTPClient{
 		Client: resty.New(),
 	}
+}
+
+/*
+SetBearerToken - Sets the authentication token for the current session
+*/
+func (client *HTTPClient) SetBearerToken(token string, request *resty.Request) {
+	request.SetAuthToken(token)
 }
 
 /*
@@ -29,12 +35,10 @@ BuildRequest Builds a new resty request automatically, filling in the headers an
 */
 func (client *HTTPClient) BuildRequest(result interface{}) *resty.Request {
 	request := client.Client.R().
-		EnableTrace().
 		SetHeader("Accept", "application/json").
 		SetHeader("User-Agent", "MTGJSON-SDK-Client v1.0.0").
 		SetResult(result).
-		SetError(&apiModels.APIResponse{}).
-		SetAuthToken(viper.GetString("api.token_str")) // request will fail if token is not valid
+		SetError(&apiModels.APIResponse{})
 
 	return request
 }
