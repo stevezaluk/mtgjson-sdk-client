@@ -14,6 +14,9 @@ import (
 AuthAPI A representation of the auth namespace for the MTGJSON API
 */
 type AuthAPI struct {
+	// baseUrl - The baseUrl with its associating endpoint attached to it, used for making HTTP requests
+	baseUrl string
+
 	// client - A pointer to the client.HTTPClient structure that is used for HTTP requests
 	client *client.HTTPClient
 }
@@ -21,10 +24,24 @@ type AuthAPI struct {
 /*
 New Create a new instance of the AuthAPI struct
 */
-func New(client *client.HTTPClient) *AuthAPI {
+func New(baseUrl string, client *client.HTTPClient) *AuthAPI {
 	return &AuthAPI{
 		client: client,
 	}
+}
+
+/*
+BaseURL - Returns the baseUrl with its associating endpoint attached to it, used for making HTTP requests
+*/
+func (api *AuthAPI) BaseURL() string {
+	return api.baseUrl
+}
+
+/*
+Client - Returns a pointer to the client.HTTPClient structure that is used for HTTP requests
+*/
+func (api *AuthAPI) Client() *client.HTTPClient {
+	return api.client
 }
 
 /*
@@ -37,7 +54,7 @@ func (api *AuthAPI) Login(email string, password string) (*oauth.TokenSet, error
 			Password: password,
 		})
 
-	resp, err := request.Post(viper.GetString("api.base_url") + "/login")
+	resp, err := request.Post(api.baseUrl + "/login")
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +102,7 @@ func (api *AuthAPI) RegisterUser(email string, username string, password string)
 			Password: password,
 		})
 
-	resp, err := request.Post(viper.GetString("api.base_url") + "/register")
+	resp, err := request.Post(api.baseUrl + "/register")
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +137,7 @@ ResetUserPassword Send a reset password email to a specified user account
 func (api *AuthAPI) ResetUserPassword(email string) (*apiModels.APIResponse, error) {
 	request := api.client.BuildRequest(&apiModels.APIResponse{}).SetQueryParam("email", email)
 
-	resp, err := request.Get(viper.GetString("api.base_url") + "/reset")
+	resp, err := request.Get(api.baseUrl + "/reset")
 	if err != nil {
 		return nil, err
 	}
