@@ -26,7 +26,8 @@ New Create a new instance of the AuthAPI struct
 */
 func New(baseUrl string, client *client.HTTPClient) *AuthAPI {
 	return &AuthAPI{
-		client: client,
+		baseUrl: baseUrl,
+		client:  client,
 	}
 }
 
